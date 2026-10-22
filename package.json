@@ -1,0 +1,20 @@
+{
+  "name": "week-2-responsive-web-design",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Northwind Trails responsive landing page (HTML + CSS). Dev dependencies are only used to generate images and run tests.",
+  "type": "module",
+  "scripts": {
+    "images": "node scripts/generate-images.mjs",
+    "validate": "html-validate index.html && csstree-validator css/styles.css",
+    "check": "node tests/responsive-check.mjs",
+    "screenshots": "node tests/responsive-check.mjs --screenshots",
+    "test": "npm run validate && npm run check"
+  },
+  "devDependencies": {
+    "csstree-validator": "4.0.1",
+    "html-validate": "11.17.0",
+    "puppeteer-core": "25.16.0",
+    "sharp": "0.35.5"
+  }
+}
