@@ -1,0 +1,759 @@
+/* ==========================================================================
+   Northwind Trails — responsive landing page
+   Mobile-first: base rules target small screens, then min-width queries add
+   layout as space allows. Breakpoints (content-driven):
+     36em (576px)  two-column cards, footer columns
+     52em (832px)  single-row header, wide hero art, 3 plans, 4-column gallery
+     68em (1088px) three-column trek grid, horizontal timeline, two-column FAQ
+   Sections: 1 tokens · 2 base · 3 utilities · 4 components · 5 sections ·
+             6 breakpoints · 7 motion preferences
+   ========================================================================== */
+
+/* 1. Tokens -------------------------------------------------------------- */
+:root {
+  --forest-900: #10241a;
+  --forest-700: #1f3d2b;
+  --forest-500: #2f5d45;
+  --moss-100: #e3ecd9;
+  --sand-50: #faf7f0;
+  --sand-100: #f1ebdd;
+  --ink: #17211b;
+  --muted: #4d5a51;
+  --ember: #b24f17;
+  --ember-dark: #943f10;
+  --line: #d9d2c1;
+  --focus: var(--ember);
+
+  --font-head: "Avenir Next", Avenir, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* Fluid type: each size grows smoothly between ~320px and ~1440px viewports */
+  --fs-sm: 0.875rem;
+  --fs-base: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --fs-lead: clamp(1.05rem, 0.98rem + 0.4vw, 1.3rem);
+  --fs-h3: clamp(1.125rem, 1.05rem + 0.35vw, 1.35rem);
+  --fs-h2: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+  --fs-h1: clamp(2.25rem, 1.4rem + 4.2vw, 4.5rem);
+
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --section-space: clamp(3rem, 2rem + 5vw, 6rem);
+  --radius: 0.75rem;
+  --max: 76rem;
+}
+
+/* 2. Base ---------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--sand-50);
+}
+
+h1, h2, h3 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-head);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+
+p { margin: 0 0 1rem; }
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a { color: var(--forest-500); text-underline-offset: 0.2em; }
+a:hover { color: var(--ember); }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+/* 3. Utilities ----------------------------------------------------------- */
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--max));
+  margin-inline: auto;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  top: -5rem;
+  left: 1rem;
+  z-index: 20;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--forest-900);
+  color: #fff;
+}
+
+.skip-link:focus { top: 1rem; color: #fff; }
+
+/* 4. Components ---------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem; /* 44px touch target */
+  padding: 0.5rem 1.25rem;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-accent { background: var(--ember); color: #fff; }
+.btn-accent:hover { background: var(--ember-dark); color: #fff; }
+
+.btn-light { background: #fff; color: var(--forest-700); }
+.btn-light:hover { background: var(--sand-100); color: var(--forest-900); }
+
+.btn-dark { background: var(--forest-700); color: #fff; }
+.btn-dark:hover { background: var(--forest-900); color: #fff; }
+
+.btn-outline { border-color: var(--forest-700); color: var(--forest-700); }
+.btn-outline:hover { background: var(--forest-700); color: #fff; }
+
+.btn-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.kicker {
+  margin-bottom: 0.5rem;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f4b37a;
+}
+
+.kicker-dark { color: var(--ember); }
+
+.badge {
+  display: inline-block;
+  align-self: flex-start;
+  margin-bottom: 0.75rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: #fbe3cf;
+  color: #8a3a0f;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--forest-900);
+  text-decoration: none;
+}
+
+.logo b { font-weight: 800; }
+.logo:hover { color: var(--forest-900); }
+.logo-light, .logo-light:hover { color: #fff; }
+
+/* 5. Sections (mobile layout) ------------------------------------------- */
+.section { padding-block: var(--section-space); }
+.section-sand { background: var(--sand-100); }
+
+.section-forest,
+.hero,
+.facts,
+.cta-band,
+.site-footer { --focus: #f4b37a; }
+
+.section-forest { background: var(--forest-700); color: #fff; }
+
+.section-head {
+  max-width: 44rem;
+  margin-bottom: clamp(1.75rem, 1rem + 2vw, 3rem);
+}
+
+.section-head p:last-child { color: var(--muted); }
+.section-forest .section-head p:last-child { color: #d9e4d3; }
+
+/* Header: logo + CTA on the first row, navigation as a swipeable strip below */
+.site-header {
+  background: var(--sand-50);
+  border-bottom: 1px solid var(--line);
+}
+
+.header-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "logo cta"
+    "nav  nav";
+  align-items: center;
+  column-gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.logo { grid-area: logo; }
+.header-cta { grid-area: cta; }
+
+.primary-nav {
+  grid-area: nav;
+  /* bleed to the screen edges so the strip can be swiped from edge to edge */
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 0.5rem var(--gutter) 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.primary-nav ul {
+  display: flex;
+  gap: 0.5rem;
+  width: max-content;
+}
+
+.primary-nav li { scroll-snap-align: start; }
+
+.primary-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.primary-nav a:hover { border-color: var(--forest-500); color: var(--forest-700); }
+
+/* Hero: picture and text share one grid cell; a gradient keeps text readable */
+.hero {
+  display: grid;
+  min-height: 34rem;
+  color: #fff;
+  background: var(--forest-900);
+}
+
+.hero > *,
+.hero::after { grid-area: 1 / 1; }
+
+/* the image fills whatever height the text needs instead of setting the height itself */
+.hero-media { position: relative; }
+
+.hero-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.hero::after {
+  content: "";
+  z-index: 1;
+  background: linear-gradient(to top, rgb(12 26 18 / 0.95) 0%, rgb(12 26 18 / 0.8) 50%, rgb(12 26 18 / 0.1) 85%);
+}
+
+.hero-content {
+  z-index: 2;
+  align-self: end;
+  padding-block: 9rem 2.5rem; /* leaves the top of the illustration visible */
+}
+
+.hero-lead {
+  max-width: 36rem;
+  font-size: var(--fs-lead);
+  color: #f1ede4;
+}
+
+/* Facts strip */
+.facts {
+  background: var(--forest-900);
+  color: #fff;
+}
+
+.facts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-block: 0;
+  padding-block: 1.75rem;
+}
+
+.facts dt { font-size: var(--fs-sm); color: #c9d8c5; }
+
+.facts dd {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
+  font-weight: 800;
+}
+
+/* Features: intrinsic grid — column count follows available width, no media query */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1.5rem;
+}
+
+.feature {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.feature img { margin-bottom: 1rem; }
+.feature p { margin: 0; color: var(--muted); }
+
+/* Treks: grid of cards; each card adapts to its own width via a container query */
+.trek-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.trek-item { container-type: inline-size; }
+
+.trek-card {
+  display: grid;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(16 36 26 / 0.08), 0 6px 20px rgb(16 36 26 / 0.06);
+}
+
+.trek-card > img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.trek-body {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+}
+
+.trek-body h3 { margin-bottom: 0.15rem; }
+
+.trek-region {
+  margin-bottom: 0.75rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--forest-500);
+}
+
+.trek-body > p:not([class]) { color: var(--muted); }
+
+.trek-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+}
+
+.trek-meta span {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.trek-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.price {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+/* When a card's container is wide enough, image and text sit side by side */
+@container (min-width: 34rem) {
+  .trek-card { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+  .trek-card > img { height: 100%; aspect-ratio: auto; }
+  .trek-body { padding: 2rem; }
+  .trek-body h3 { font-size: clamp(1.4rem, 1rem + 1.5cqi, 2rem); }
+}
+
+/* Itinerary timeline: vertical on small screens */
+.timeline {
+  display: grid;
+  gap: 1.75rem;
+  max-width: 40rem;
+}
+
+.timeline li {
+  position: relative;
+  padding-left: 2rem;
+  border-left: 2px solid var(--line);
+  margin-left: 0.5rem;
+}
+
+.timeline li::before {
+  content: "";
+  position: absolute;
+  top: 0.35rem;
+  left: -0.5625rem;
+  width: 1rem;
+  height: 1rem;
+  border: 3px solid var(--ember);
+  border-radius: 50%;
+  background: var(--sand-50);
+}
+
+.timeline p { margin-bottom: 0.4rem; color: var(--muted); }
+
+.timeline .day {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+
+.timeline .stage { font-weight: 600; color: var(--forest-500); }
+
+/* Plans */
+.plan-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.75rem;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: var(--radius);
+  background: rgb(255 255 255 / 0.06);
+}
+
+.plan-highlight {
+  border: 2px solid #f4b37a;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.plan-price { color: #d9e4d3; }
+
+.plan-price strong {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 2rem;
+  color: #fff;
+}
+
+.checklist {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 1.75rem;
+}
+
+.checklist li {
+  padding-left: 1.75rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m4 10 4 4 8-8' fill='none' stroke='%23f4b37a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat 0 0.2em / 1.1em;
+}
+
+.plan .btn { margin-top: auto; }
+
+/* Gallery: mosaic built from a fixed row height and spanning items */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: clamp(9rem, 42vw, 15rem);
+  gap: 0.75rem;
+}
+
+.gallery img {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.g-large,
+.g-wide { grid-column: span 2; }
+
+/* Stories: a swipeable row with scroll snapping on small screens */
+.stories {
+  display: flex;
+  gap: 1rem;
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 0.25rem var(--gutter) 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+}
+
+.stories > li {
+  flex: 0 0 min(85%, 22rem);
+  scroll-snap-align: start;
+}
+
+.story {
+  height: 100%;
+  margin: 0;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.story blockquote { margin: 0 0 1rem; }
+.story blockquote p { font-size: 1.05rem; }
+
+.story figcaption { font-size: var(--fs-sm); color: var(--muted); }
+.story figcaption strong { display: block; color: var(--ink); font-size: 1rem; }
+
+/* FAQ */
+.faq-list { display: grid; gap: 0.75rem; }
+
+.faq-list details {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.faq-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.25rem;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-list summary::-webkit-details-marker { display: none; }
+
+.faq-list summary::after {
+  content: "+";
+  flex: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--ember);
+}
+
+.faq-list details[open] summary::after { content: "−"; }
+.faq-list summary:hover { color: var(--forest-500); }
+.faq-list details p { margin: 0; padding: 0 1.25rem 1.25rem; color: var(--muted); }
+
+/* CTA band */
+.cta-band {
+  padding-block: var(--section-space);
+  background: linear-gradient(135deg, var(--forest-500), var(--forest-900));
+  color: #fff;
+  text-align: center;
+}
+
+.cta-inner { max-width: 40rem; }
+.cta-inner p { color: #d9e4d3; margin-bottom: 1.5rem; }
+
+/* Footer */
+.site-footer {
+  padding-block: 3rem 1.5rem;
+  background: var(--forest-900);
+  color: #c9d8c5;
+}
+
+.footer-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.site-footer h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.site-footer a { color: #fff; }
+.site-footer a:hover { color: #f4b37a; }
+.site-footer li + li { margin-top: 0.5rem; }
+.site-footer address { font-style: normal; line-height: 1.9; }
+.footer-brand p { margin-top: 0.75rem; max-width: 22rem; }
+
+.copyright {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(255 255 255 / 0.15);
+  font-size: var(--fs-sm);
+}
+
+/* 6. Breakpoints --------------------------------------------------------- */
+
+/* ≥ 36em: enough room for two cards side by side */
+@media (min-width: 36em) {
+  .btn-row { flex-direction: row; flex-wrap: wrap; }
+
+  .trek-grid { grid-template-columns: repeat(2, 1fr); }
+  .trek-item-featured { grid-column: span 2; }
+
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ≥ 52em: header fits on one row, the wide hero composition is used */
+@media (min-width: 52em) {
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  html { scroll-padding-top: 5rem; }
+
+  .header-bar {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "logo nav cta";
+    min-height: 4.5rem;
+    padding-top: 0;
+  }
+
+  .primary-nav {
+    justify-self: center;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .primary-nav ul { gap: 0.25rem; }
+
+  .primary-nav a {
+    border-color: transparent;
+    background: none;
+    padding-inline: 0.75rem;
+  }
+
+  .primary-nav a:hover { border-color: transparent; background: var(--sand-100); }
+
+  .hero { min-height: clamp(36rem, 44vw, 48rem); }
+
+  .hero::after {
+    background: linear-gradient(90deg, rgb(12 26 18 / 0.9) 0%, rgb(12 26 18 / 0.7) 45%, rgb(12 26 18 / 0.05) 80%);
+  }
+
+  .hero-content { align-self: center; padding-block: 4rem; }
+  .hero-content h1 { max-width: 14ch; }
+
+  .facts-grid { grid-template-columns: repeat(4, 1fr); }
+
+  .plan-grid { grid-template-columns: repeat(3, 1fr); align-items: center; }
+  .plan-highlight { padding-block: 2.5rem; }
+
+  .gallery {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: clamp(9rem, 15vw, 14rem);
+  }
+
+  .g-large { grid-row: span 2; }
+  .g-wide-lg { grid-column: span 2; }
+
+  .stories {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+  }
+}
+
+/* ≥ 68em: desktop — three-column treks, horizontal timeline, two-column FAQ */
+@media (min-width: 68em) {
+  .trek-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .timeline {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    max-width: none;
+  }
+
+  .timeline li {
+    margin-left: 0;
+    padding: 2rem 0 0;
+    border-left: 0;
+    border-top: 2px solid var(--line);
+  }
+
+  .timeline li::before { top: -0.5625rem; left: 0; }
+
+  .faq-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .footer-grid { grid-template-columns: 1.6fr repeat(3, 1fr); }
+}
+
+/* Short screens (small phones, phones in landscape): less hero padding so the call to action stays in view */
+@media (max-height: 40em) {
+  .hero-content { padding-block: 3rem 2rem; }
+}
+
+/* 7. Motion preferences -------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn { transition: none; }
+}
